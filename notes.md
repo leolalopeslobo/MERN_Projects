@@ -1,0 +1,57 @@
+__v is a version key added by Mongoose
+
+```json
+"__v": 0
+```
+
+Tracks how many times a document has been modified via Mongoose document lifecycle
+
+
+###### When does __v change?
+Increments ONLY when using:
+```js
+const doc = await Task.findById(id);
+doc.priority = "low";
+await doc.save();
+```
+
+```json
+"__v": 1
+```
+
+Does NOT change when using:
+```js
+await Task.findByIdAndUpdate(id, data);
+```
+
+```json
+"__v": 0
+```
+
+###### Why does this happen?
+Two update styles in Mongoose:
+1. Document-based update (tracked)
+```js
+const doc = await Task.findById(id);
+doc.field = value;
+await doc.save();
+```
+
+Features:
+- Tracks changes
+- Runs validation
+- Runs middleware
+- Updates __v
+
+2. Direct query update (untracked)
+```js
+await Task.findByIdAndUpdate(id, data);
+```
+
+Features:
+- Faster
+- No tracking
+- No __v update
+- Limited validation
+
+For more read ['mongoose-versioning-debug'](/mongoose-versioning-debug.md)
