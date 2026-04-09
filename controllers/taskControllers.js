@@ -1,12 +1,11 @@
-const Task = require('../models/Task');
+const { createTaskService, getAllTaskService, getATaskService, updateATaskService, deleteTaskService } = require('../services/taskService');
 
 // create task controller
 const createTask = async(req, res) => {
     console.log('Headers: ', req.headers);
     console.log('Body: ', req.body);
     try {
-        const task = new Task(req.body);
-        const saved = await task.save()
+        const saved = await createTaskService(req.body);
         res.send(saved);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -18,7 +17,7 @@ const getAllTasks = async (req, res) => {
     console.log('Headers: ', req.headers);
     console.log('Body: ', req.body);
     try {
-        const tasks = await Task.find();
+        const tasks = await getAllTaskService();
         res.json(tasks);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -32,7 +31,7 @@ const getATask = async (req, res) => {
     console.log('Body: ', req.body);
 
     try {
-        const task = Task.findById(req.params.id);
+        const task = await getATaskService(req.params.id);
         res.json(task);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -46,79 +45,17 @@ const updateTask = async (req, res) => {
     console.log('Body: ', req.body);
 
     try {
-    // Example incoming request:
-    // req.body = {
-    //   title: "Study harder",
-    //   priority: "high",
-    //   is_done: true,
-    //   randomField: "hack attempt"
-    // }
-
-    // Only these fields are allowed to be updated
-    const allowedFields = ["title", "content", "priority", "is_done", "tags"];
-
-    // This will store only valid fields from req.body
-    const updates = {};
-
-    // Loop through allowed fields one by one
-    for (let key of allowedFields){
-
-        // Check: does req.body contain this field?
-        // Example checks:
-        // key = "title"     → exists
-        // key = "content"   → does NOT exist
-        if (req.body[key] !== undefined) {
-
-            // Add only allowed + existing fields to updates
-            // Example result after loop:
-            // updates = {
-            //   title: "Study harder",
-            //   priority: "high",
-            //   is_done: true
-            // }
-            updates[key] = req.body[key];
-        }
-    }
-
-    // Find the document in DB using ID
-    const doc = await Task.findById(req.params.id);
-
-    // Example DB document before update:
-    // doc = {
-    //   title: "Study",
-    //   content: "Math chapter 1",
-    //   priority: "low",
-    //   is_done: false,
-    //   tags: ["school"]
-    // }
-
-    // Apply updates to the document
-    doc.set(updates);
-
-    // After this line, doc becomes:
-    // {
-    //   title: "Study harder",      // updated
-    //   content: "Math chapter 1",  // unchanged
-    //   priority: "high",           // updated
-    //   is_done: true,              // updated
-    //   tags: ["school"]            // unchanged
-    // }
-
-    // Save updated document to database
-    const updatedDoc = await doc.save();
-
-    // Send updated document back as response
-    res.json(updatedDoc);
-
-    // Final response sent:
-    // {
-    //   _id: "...",
-    //   title: "Study harder",
-    //   content: "Math chapter 1",
-    //   priority: "high",
-    //   is_done: true,
-    //   tags: ["school"]
-    // }
+        const updatedDoc = await updateATaskService(req.params.id, req.body);
+        res.json(updatedDoc);
+        // Final response sent:
+        // {
+        //   _id: "...",
+        //   title: "Study harder",
+        //   content: "Math chapter 1",
+        //   priority: "high",
+        //   is_done: true,
+        //   tags: ["school"]
+        // }
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -131,7 +68,7 @@ const deleteTask = async(req, res) => {
     console.log("Body: ", req.body);
 
     try {
-        const delTask = await Task.findByIdAndDelete(req.params.id);
+        const delTask = await deleteTaskService(req.params.id);
         res.json(delTask);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -146,3 +83,7 @@ module.exports = {
     updateTask,
     deleteTask
 }
+
+
+// req and res only exist in the controller — they are never passed to the service.
+// If the service needs data from the request, the controller must extract it and pass it as an argument.
