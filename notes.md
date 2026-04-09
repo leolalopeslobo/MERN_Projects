@@ -55,3 +55,19 @@ Features:
 - Limited validation
 
 For more read ['mongoose-versioning-debug'](/mongoose-versioning-debug.md)
+
+
+Middleware is code that runs BEFORE your controller
+validation is done by middlewares
+
+Client
+ ↓
+Route
+ ↓
+Middleware (validation)
+ ↓
+Controller
+ ↓
+Service
+ ↓
+Database
