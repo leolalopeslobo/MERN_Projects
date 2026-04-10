@@ -1,23 +1,23 @@
 const { signUpService, loginService } = require('../services/authService');
 
 // signup controller
-const signUp = async (req, res) => {
+const signUp = async (req, res, next) => {
     try {
     const saved = await signUpService(req.body);
     res.json({ id: saved._id, email: saved.email });
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        next(err);
     }
 }
 
-const login = async (req, res) => {
+const login = async (req, res, next) => {
   try {
 
     const token = await loginService(req.body);
     res.json({ token });
 
   } catch (err) {
-    res.status(401).json({ error: err.message });
+      next(err);
   }
 };
 

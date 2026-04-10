@@ -1,6 +1,7 @@
 const mongoose = require('mongoose'); // Translator between code and the database - helps the code talk to the db
 const express = require("express"); // Tool that handles incoming requests
 const cors = require('cors'); // Security guard that allows frontend-backend communication (makes Same-Origin Policy flexible)
+const errorHandler = require('./middlewares/errorHandler');
 
 const taskRoutes = require('./routes/taskRoutes')
 const authRoutes = require('./routes/authRoutes')
@@ -28,6 +29,16 @@ app.get("/ping", (req, res) => {
   console.log("Ping received!");
   res.send("pong");
 });
+
+// code to test a simple manual error
+app.get("/test-error", (req, res, next) => {
+  const err = new Error("Test error working");
+  err.statusCode = 400;
+  next(err);
+});
+
+// after all routes
+app.use(errorHandler);
 
 mongoose.connect(process.env.MONGO_URI)  // Connect to the database using the secret address from .env
 .then(() => {                            // If the connection succeeds...

@@ -1,32 +1,32 @@
 const { createTaskService, getAllTaskService, getATaskService, updateATaskService, deleteTaskService } = require('../services/taskService');
 
 // create task controller
-const createTask = async(req, res) => {
+const createTask = async(req, res, next) => {
     console.log('Headers: ', req.headers);
     console.log('Body: ', req.body);
     try {
         const saved = await createTaskService(req.body);
         res.send(saved);
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        next(err); // pass to global handler
     }
 }
 
 // get all tasks controller
-const getAllTasks = async (req, res) => {
+const getAllTasks = async (req, res, next) => {
     console.log('Headers: ', req.headers);
     console.log('Body: ', req.body);
     try {
         const tasks = await getAllTaskService();
         res.json(tasks);
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        next(err); // pass to global handler
     }
 }
 
 
 // get a specific task controller
-const getATask = async (req, res) => {
+const getATask = async (req, res, next) => {
     console.log('Headers: ', req.headers);
     console.log('Body: ', req.body);
 
@@ -34,13 +34,13 @@ const getATask = async (req, res) => {
         const task = await getATaskService(req.params.id);
         res.json(task);
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        next(err); // pass to global handler
     }
 }
 
 
 // update a task controller
-const updateTask = async (req, res) => {
+const updateTask = async (req, res, next) => {
     console.log('Headers: ', req.headers);
     console.log('Body: ', req.body);
 
@@ -57,13 +57,13 @@ const updateTask = async (req, res) => {
         //   tags: ["school"]
         // }
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        next(err); // pass to global handler
     }
 }
 
 
 // delete a task controller
-const deleteTask = async(req, res) => {
+const deleteTask = async(req, res, next) => {
     console.log("Headers: ", req.headers);
     console.log("Body: ", req.body);
 
@@ -71,7 +71,7 @@ const deleteTask = async(req, res) => {
         const delTask = await deleteTaskService(req.params.id);
         res.json(delTask);
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        next(err); // pass to global handler
     }
 }
 
