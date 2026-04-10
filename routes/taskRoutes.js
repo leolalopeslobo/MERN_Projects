@@ -1,11 +1,12 @@
 const express = require('express');
 const router = express.Router(); // is like creating a mini receptionist that handles a specific section of your app
-const validateTask = require('../middlewares/validateTask');
+const validate = require('../middlewares/validate');
+const { taskSchema } = require("../validators/taskValidator");
 const auth = require('../middlewares/auth');
 const { createTask, getAllTasks, getATask, updateTask, deleteTask } = require('../controllers/taskControllers');
 
 //create a task
-router.post("/", auth, validateTask, createTask);
+router.post("/", auth, validate(taskSchema), createTask);
 
 // async/await
 /*
@@ -39,12 +40,12 @@ A: Sending data from database → res.json(). Sending a simple message → res.s
 */
 
 // get a specific task
-router.get("/:id", auth, validateTask, getATask)
+router.get("/:id", auth, getATask)
 
 
 // update/edit a task
-router.put("/:id", auth, validateTask, updateTask)
+router.put("/:id", auth, validate(taskSchema), updateTask)
 
 // delete a task
-router.delete("/:id", auth, validateTask, deleteTask);
+router.delete("/:id", auth, deleteTask);
 module.exports = router;
