@@ -3,11 +3,13 @@ const express = require("express"); // Tool that handles incoming requests
 const cors = require('cors'); // Security guard that allows frontend-backend communication (makes Same-Origin Policy flexible)
 
 const taskRoutes = require('./routes/taskRoutes')
+const authRoutes = require('./routes/authRoutes')
 
 require('dotenv').config(); // Open the secret drawer and load passwords/keys
 
 const app = express();        // Start the receptionist and name them 'app'
 
+// middlewares
 app.use(cors());              // Rule 1: Let all origins (addresses) communicate with the server relaxing the Same-Origin Policy
 app.use(express.json());      // Rule 2: Unpack all incoming JSON data so our code can read it. Converts different forms of incoming data (raw, text, etc.) into JavaScript Objects
 
@@ -15,6 +17,7 @@ app.use(express.json());      // Rule 2: Unpack all incoming JSON data so our co
 // app.use() is simply a way of saying "apply this to every request that comes in."
 
 app.use("/api/tasks", taskRoutes);
+app.use("/api/auth", authRoutes);
 
 app.get("/", (req, res) => {  // When someone visits / of the server
     res.send("API is running...");  // Send back this message

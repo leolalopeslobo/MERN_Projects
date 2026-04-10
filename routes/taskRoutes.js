@@ -1,10 +1,11 @@
 const express = require('express');
 const router = express.Router(); // is like creating a mini receptionist that handles a specific section of your app
 const validateTask = require('../middlewares/validateTask');
+const auth = require('../middlewares/auth');
 const { createTask, getAllTasks, getATask, updateTask, deleteTask } = require('../controllers/taskControllers');
 
 //create a task
-router.post("/", validateTask, createTask);
+router.post("/", auth, validateTask, createTask);
 
 // async/await
 /*
@@ -24,7 +25,7 @@ You put this before a slow operation to say:
 
 
 // get all tasks
-router.get("/", validateTask, getAllTasks)
+router.get("/", auth, getAllTasks)
 
 /*
 Q: What is res.send()?
@@ -38,12 +39,12 @@ A: Sending data from database → res.json(). Sending a simple message → res.s
 */
 
 // get a specific task
-router.get("/:id", validateTask, getATask)
+router.get("/:id", auth, validateTask, getATask)
 
 
 // update/edit a task
-router.put("/:id", validateTask, updateTask)
+router.put("/:id", auth, validateTask, updateTask)
 
 // delete a task
-router.delete("/:id", validateTask, deleteTask);
+router.delete("/:id", auth, validateTask, deleteTask);
 module.exports = router;

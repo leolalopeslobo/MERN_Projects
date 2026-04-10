@@ -71,3 +71,19 @@ Controller
 Service
  ↓
 Database
+
+
+
+You can have many middlewares and they run in the order you add them.
+
+Request
+    ↓
+authMiddleware      → is the user logged in?
+    ↓
+validateTask        → is the data valid?
+    ↓
+rateLimiter         → is the user sending too many requests?
+    ↓
+Controller
+
+Each middleware does its job and calls next() to pass the request to the next one. If any middleware fails — the chain stops there and the request never reaches the controller.
